@@ -1,24 +1,8 @@
-# up2date2
+# tiempología
 
-## Project setup
-```
-npm install
-```
+[Tiempología: Control de cuerpo y mente](https://github.com/allnulled/tiempologia) es una aplicación para monitorizar **objetivos**, **planes** y **eventos** en el **tiempo**.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+La aplicación puedes usarla en línea [aquí](https://allnulled.github.io/tiempologia).
 
-### Compiles and minifies for production
-```
-npm run build
-```
+También podrás descargártela una vez entres, y usarla fuera de línea en tu *smartphone* o *tablet*.
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
