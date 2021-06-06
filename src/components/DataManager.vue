@@ -1,8 +1,10 @@
 <template>
   <div class="data-manager-component">
     <div>
-        <div class="form-label">Sección de datos de «{{ targetModel.toLowerCase() }}»</div>
-        <div class="h-border"></div>
+      <div class="form-label">
+        Sección de datos de «{{ targetModel.toLowerCase() }}»
+      </div>
+      <div class="h-border"></div>
     </div>
     <table class="no-border-table" data-ref="data-manager-main-table">
       <tbody>
@@ -44,8 +46,15 @@
                     </div>
                   </td>
                   <td class="width-100-x100 text-align-center">
-                    <div class="text-label" style="font-size: 10px">{{ formatDate(selectedDate).replace(/-/g, "/") }}</div>
-                    <div class="text-label" style="font-size: 9px">{{ formatToDiaSemana(selectedDate) }}, {{ selectedDate.getDate() }} de {{ formatToMesDelAno(selectedDate).toLowerCase() }} del {{ selectedDate.getFullYear() }}</div>
+                    <div class="text-label" style="font-size: 10px">
+                      {{ formatDate(selectedDate).replace(/-/g, "/") }}
+                    </div>
+                    <div class="text-label" style="font-size: 9px">
+                      {{ formatToDiaSemana(selectedDate) }},
+                      {{ selectedDate.getDate() }} de
+                      {{ formatToMesDelAno(selectedDate).toLowerCase() }} del
+                      {{ selectedDate.getFullYear() }}
+                    </div>
                   </td>
                   <td>
                     <div class="form-input-deployer-container">
@@ -66,7 +75,7 @@
       </tbody>
     </table>
     <table
-      class="no-border-table data-table"
+      class="no-border-table data-table data-manager-table"
       v-if="mode === 'see'"
       data-ref="data-manager-to_see-table"
     >
@@ -98,6 +107,7 @@
         v-bind:key="modelIndex"
         class="table-group"
         :class="{
+          ['tipo-' + modelData.tipo.toLowerCase()]: true,
           hidden:
             searchValue.length > 0 &&
             JSON.stringify(modelData)
@@ -106,7 +116,11 @@
         }"
       >
         <tr
-          v-if="targetModel === 'Prototipos' || modelData.momento_efectivo.split(' ')[0] === formatDateReversed(selectedDate)"
+          v-if="
+            targetModel === 'Prototipos' ||
+            modelData.momento_efectivo.split(' ')[0] ===
+              formatDateReversed(selectedDate)
+          "
           class="nombre-row"
           :class="{ selected: selectedModel === modelIndex }"
         >
@@ -115,19 +129,30 @@
             :colspan="selectedModel === modelIndex ? 9 : 10"
             v-on:click="selectModel(modelIndex)"
           >
-            <b>{{ modelData.nombre.replace(/\[[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] ([0-9][0-9]:[0-9][0-9]):[0-9][0-9]\]$/g, "") }}</b>
-            <span v-if="targetModel !== 'Prototipos'" class="underline">({{ modelData.nombre.replace(/\[[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] ([0-9][0-9]:[0-9][0-9]):[0-9][0-9]\]$/g, "ððð a las $1").replace(/[^ð]+ððð /g, "") }})</span>
+            <b>{{
+              modelData.nombre.replace(
+                REGEX_FOR_DATE_IN_THE_END,
+                ""
+              )
+            }} </b>
+            <span v-if="targetModel !== 'Prototipos'" class="underline"
+              >({{
+                modelData.nombre
+                  .replace(
+                    REGEX_FOR_DATE_IN_THE_END,
+                    "ððð a las $4:$5"
+                  )
+                  .replace(/[^ð]+ððð /g, "")
+              }})</span
+            >
           </td>
-          <td v-if="selectedModel === modelIndex">
-            <div class="form-input-deployer-container">
-              <div class="form-input-deployer-icon">
+          <td v-if="selectedModel === modelIndex" style="border-bottom: 1px solid #FFFFFF;">
+            <div class="form-button sm danger-button">
                 <img
-                  class="form-input-deployer"
-                  style="background-color: #FFE0E0;"
+                  class="form-icon"
                   src="@/components/Forms/icons/trash.png"
                   v-on:click="confirmDelete(selectedModel)"
                 />
-              </div>
             </div>
           </td>
         </tr>
@@ -143,7 +168,6 @@
                   v-bind:key="modelIndex + '+' + propert"
                 >
                   <td
-                    v-if="value !== '' && value.length !== 0"
                     class="property-cell"
                   >
                     {{
@@ -152,7 +176,6 @@
                     }}:
                   </td>
                   <td
-                    v-if="value !== '' && value.length !== 0"
                     class="value-cell"
                     v-on:click="changeValue(modelData, propert)"
                   >
@@ -252,7 +275,12 @@
                     >
                       <tr>
                         <td class="width-100-x100">
-                          {{ puntuacion.nombre }} {{ typeof puntuacion.intensidad === 'number' ? `[x${puntuacion.intensidad}]` : '' }}
+                          {{ puntuacion.nombre }}
+                          {{
+                            typeof puntuacion.intensidad === "number"
+                              ? `[x${puntuacion.intensidad}]`
+                              : ""
+                          }}
                         </td>
                         <td
                           style="min-width: 30px"
@@ -286,7 +314,7 @@
                                 <img
                                   v-if="selectedObjetivo === indexPuntuacion"
                                   class="form-input-deployer"
-                                  style="background-color: #D0D0FF"
+                                  style="background-color: #d0d0ff"
                                   src="@/components/Forms/icons/eye.png"
                                 />
                                 <img
@@ -300,10 +328,7 @@
                         </td>
                       </tr>
                       <tr v-if="selectedObjetivo === indexPuntuacion">
-                        <td
-                          colspan="10"
-                          class="propiedades-de-objetivo-cell"
-                        >
+                        <td colspan="10" class="propiedades-de-objetivo-cell">
                           <div>
                             <table
                               class="no-border-table width-100-x100"
@@ -342,7 +367,12 @@
                                     </div>
                                   </td>
                                   <td class="width-100-x100">
-                                    <input type="text" class="form-input" style="text-align: center;" v-model="puntuacion.intensidad" />
+                                    <input
+                                      type="text"
+                                      class="form-input"
+                                      style="text-align: center"
+                                      v-model="puntuacion.intensidad"
+                                    />
                                   </td>
                                   <td>
                                     <div class="form-input-deployer-container">
@@ -369,29 +399,28 @@
                   </table>
                 </div>
               </div>
-              <div style="padding-top: 5px;"></div>
+              <div style="padding-top: 5px"></div>
               <button
-                class="form-button icon-button width-100-x100"
+                class="form-button sm width-100-x100"
                 type="button"
                 v-on:click="internalValue.puntuacion_de_objetivos.push({})"
               >
-                <div class="form-input-deployer-container">
-                  <div class="form-input-deployer-icon">
                     <img
-                      class="form-input-deployer"
+                      class="form-icon sm vertical-align-middle"
                       src="@/components/Forms/icons/plus.png"
-                      v-on:click="
-                        increasePuntuacionIntensidad(
-                          indexPuntuacion
-                        )
-                      "
+                      v-on:click="increasePuntuacionIntensidad(indexPuntuacion)"
                     />
-                  </div>
-                </div>
               </button>
             </div>
             <div class="h-border"></div>
             <div class="text-align-center">
+              <div
+                class="error-box"
+                v-if="formErrorMessage"
+                style="margin-top: 15px"
+              >
+                {{ formErrorMessage }}
+              </div>
               <FormButton
                 :root="root"
                 label-preset="Guardar"
@@ -409,6 +438,7 @@
 import store from "@/assets/js/store.js";
 import formsUtils from "@/assets/js/forms-utils.js";
 
+const { REGEX_FOR_DATE_IN_THE_END } = store;
 const TABLAS_DE_DATOS = {
   Prototipos: {
     singular: "prototipo",
@@ -455,6 +485,7 @@ export default {
   },
   data() {
     return {
+      REGEX_FOR_DATE_IN_THE_END,
       searchValue: "",
       internalValue: this.generateFreshValue(),
       mode: this.modePreset || "see",
@@ -478,6 +509,7 @@ export default {
       selectablePlanes: [],
       selectableEventos: [],
       selectableObjetivos: [],
+      formErrorMessage: undefined,
     };
   },
   watch: {
@@ -504,6 +536,8 @@ export default {
         this.modelsData = [
           ...this["result" + this.targetModel].map((x) => this.sortedFields(x)),
         ].sort((a, b) => {
+          if(!b.momento_efectivo) return -1;
+          if(!a.momento_efectivo) return 1;
           return a.momento_efectivo >= b.momento_efectivo ? -1 : 1;
         });
       } catch (error) {
@@ -515,10 +549,17 @@ export default {
       this.mode = mode;
       if (mode === "see") {
         this.refreshData();
-      } else if(mode === "add") {
+      } else if (mode === "add") {
         setTimeout(() => {
-          this.$refs.Momento_efectivo.internalValueForDate = this.formatDateReversed(this.selectedDate);
-          this.$refs.Momento_efectivo.internalValueForTime = this.formatTime(this.selectedDate);
+          if(!("Momento_efectivo" in this.$refs)) {
+            return;
+          }
+          this.$refs.Momento_efectivo.internalValueForDate = this.formatDateReversed(
+            this.selectedDate
+          );
+          this.$refs.Momento_efectivo.internalValueForTime = this.formatTime(
+            this.selectedDate
+          );
         }, 50);
       }
     },
@@ -543,10 +584,14 @@ export default {
     },
     async submitForm() {
       try {
+        console.log("1", this.targetModel);
         let isValid = "";
-        if (this.$refs.Nombre) this.$refs.Nombre.errorMessage = false;
-        if (this.$refs.Momento_efectivo)
+        if (this.$refs.Nombre) {
+          this.$refs.Nombre.errorMessage = false;
+        }
+        if (this.$refs.Momento_efectivo) {
           this.$refs.Momento_efectivo.errorMessage = false;
+        }
         if (
           !this.internalValue.nombre ||
           this.internalValue.nombre.length === 0
@@ -581,30 +626,21 @@ export default {
         } else {
           adaptedValue = { ...this.internalValue };
         }
-        if(this.targetModel !== "Prototipos") {
-          adaptedValue.nombre += ` [${this.formatDateReversedTime(new Date())}]`;
-        }
-        adaptedValue.puntuacion_de_objetivos = (adaptedValue.puntuacion_de_objetivos || []).filter(i => typeof i.nombre === "string" && i.nombre.length);
+
+
         const results = [];
-        if(this.targetModel === "Eventos") {
-          const objs = adaptedValue.puntuacion_de_objetivos;
-          for(let indexObj = 0; indexObj < objs.length; indexObj++) {
-            const obj = objs[indexObj];
-            const objPrototipo = this.dataPrototiposDeObjetivos.filter(ob => ob.nombre === obj.nombre)[0];
-            const obj2 = Object.assign({}, objPrototipo, obj);
-            obj2.momento_efectivo = adaptedValue.momento_efectivo;
-            const tempResult = await store.insert("Objetivos", [obj2]);
-            results.push(tempResult);
-          }
-        }
-        const result = await store.insert(this.targetModel, [adaptedValue]);
+        const result = await store.insertEventoInCascade(adaptedValue, this.dataPrototiposDeObjetivos);
+
+
+
         results.push(result);
-        console.log("INSERT RESULT:", adaptedValue, results);
+        console.log("INSERT RESULT:", results);
         this.internalValue = this.generateFreshValue();
         this.mode = "see";
         this.refreshData();
       } catch (error) {
         console.error(error);
+        this.formErrorMessage = error;
         throw error;
       }
     },
@@ -684,33 +720,55 @@ export default {
       };
     },
     increasePuntuacionIntensidad(indexPuntuacion) {
-      if(!this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad) {
-        this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad = 0;
+      if (
+        !this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad
+      ) {
+        this.internalValue.puntuacion_de_objetivos[
+          indexPuntuacion
+        ].intensidad = 0;
       }
-      this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad = 0+1 + parseInt(this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad);
+      this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad =
+        0 +
+        1 +
+        parseInt(
+          this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad
+        );
       this.$forceUpdate();
     },
     decreasePuntuacionIntensidad(indexPuntuacion) {
-      if(!this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad) {
-        this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad = 0;
+      if (
+        !this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad
+      ) {
+        this.internalValue.puntuacion_de_objetivos[
+          indexPuntuacion
+        ].intensidad = 0;
       }
-      this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad = 0-1 + parseInt(this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad);
+      this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad =
+        0 -
+        1 +
+        parseInt(
+          this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad
+        );
       this.$forceUpdate();
     },
     decreaseDate() {
       const currentDate = new Date(this.selectedDate);
-      currentDate.setDate(this.selectedDate.getDate()-1);
+      currentDate.setDate(this.selectedDate.getDate() - 1);
       this.selectedDate = currentDate;
+      this.selectedModel = -1;
     },
     increaseDate() {
       const currentDate = new Date(this.selectedDate);
-      currentDate.setDate(this.selectedDate.getDate()+1);
+      currentDate.setDate(this.selectedDate.getDate() + 1);
       this.selectedDate = currentDate;
+      this.selectedModel = -1;
     },
     confirmDelete(index) {
       const dataItem = this.modelsData[index];
-      const isConfirmed = window.confirm(`Would you like to delete ${JSON.stringify(dataItem, null, 4)}?`);
-      if(isConfirmed) {
+      const isConfirmed = window.confirm(
+        `Quieres eliminar el «${dataItem.tipo.toLowerCase()}»: ${JSON.stringify(dataItem, null, 4)}?`
+      );
+      if (isConfirmed) {
         store.delete(this.targetModel, dataItem.id);
         this.selectedModel = -1;
         return this.refreshData();
@@ -718,8 +776,29 @@ export default {
     },
     async changeValue(item, propert) {
       try {
-        const value = window.prompt(`Establece un nuevo valor para:\n\n  «${this.targetModel}#${item.id}.${propert}»\n\n`, item[propert]);
-        if(item[propert] !== value && typeof value === "string") {
+        let value = undefined;
+        if(typeof item[propert] !== "string") {
+          value = window.prompt(
+            `Establece un nuevo valor para:\n\n  «${this.targetModel}#${item.id}.${propert}»\n\n`,
+            JSON.stringify(item[propert])
+          );
+          try {
+            value = JSON.parse(value);
+          } catch (error) {
+            window.alert(error.name + ": " + error.message);
+            throw error;
+          }
+        } else {
+          value = window.prompt(
+            `Establece un nuevo valor para:\n\n  «${this.targetModel}#${item.id}.${propert}»\n\n`,
+            item[propert]
+          );
+        }
+        if (item[propert] !== value && typeof value === "string") {
+          item[propert] = value;
+          await store.update(this.targetModel, item.id, item);
+          await this.refreshData();
+        } else if(typeof value !== "undefined" && value !== null) {
           item[propert] = value;
           await store.update(this.targetModel, item.id, item);
           await this.refreshData();
@@ -729,7 +808,7 @@ export default {
         throw error;
       }
     },
-    ...formsUtils
+    ...formsUtils,
   },
 };
 </script>

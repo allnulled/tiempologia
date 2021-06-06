@@ -14,13 +14,15 @@
                 }"
                 v-on:click="selectValue(possibleIndex)"
               >
-                <img
-                  class="navigation-icon"
-                  :src="formatIconPath(possibleItem)"
-                />
-                <span class="navigation-icon-label">{{
-                  possibleItem[propertyToShow]
-                }}</span>
+                <div class="curved overflow-hidden">
+                  <img
+                    class="navigation-icon curved"
+                    :src="formatIconPath(possibleItem)"
+                  />
+                  <span class="navigation-icon-label">{{
+                    possibleItem[propertyToShow]
+                  }}</span>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -101,19 +103,22 @@ export default {
 
 <style>
 .navigation-item {
+  width: 15.1666%;
+  vertical-align: top;
+}
+.navigation-item > div {
   background-color: transparent;
+  border: 1px solid transparent;
   cursor: pointer;
   transition: background-color 0.2s linear;
-  vertical-align: top;
-  padding: 2px;
-  width: 15.1666%;
+  padding: 0;
   overflow: hidden;
-  padding: 5px;
+  padding: 3px;
 }
-.navigation-item:hover {
+.navigation-item > div:hover {
   background-color: #e0e0e0;
 }
-.navigation-item.selected {
+.navigation-item.selected > div{
   border: 1px solid #e0e0e0;
   background-color: #ffffff;
 }

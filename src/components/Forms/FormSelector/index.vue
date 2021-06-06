@@ -12,7 +12,7 @@
         <tr>
           <td class="form-input-container-cell">
             <div class="form-input-container">
-              <div class="form-input cursor-pointer"
+              <div class="form-input cursor-pointer curved"
                 v-on:click="toggleOptions"
                 style="min-height: 40px; max-height: 40px; background-color: #FAFAFA;">
                 {{ internalValue }}
@@ -22,7 +22,7 @@
           <td class="form-input-deployer-container" v-on:click="toggleOptions">
             <div class="form-input-deployer-icon">
               <img
-                class="form-input-deployer"
+                class="form-input-deployer curved"
                 src="@/components/Forms/icons/down-arrow.png"
               />
             </div>
@@ -119,9 +119,10 @@ export default {
   min-height: 30px;
 }
 .form-input-deployer {
-  width: 39px;
-  height: 39px;
-  background-color: #e0e0e0;
+  width: 37px;
+  height: 37px;
+  background-color: #E0E0E0;
+  border-radius: 3pt;
   padding: 10px;
   vertical-align: middle;
   cursor: pointer;
@@ -158,9 +159,5 @@ export default {
 .no-border-table {
   border-collapse: collapse;
   border: none;
-}
-.icon-button {
-  background-color: #e0e0e0;
-  padding: 0;
 }
 </style>

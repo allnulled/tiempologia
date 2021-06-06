@@ -1,3 +1,6 @@
+const DEFAULT_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" 
+    //+ "abcdefghijklmnopqrstuvwxyz"
+    ;
 
 export default {
     pad(pad, str, padLeft = true) {
@@ -9,13 +12,10 @@ export default {
         }
     },
     formatDateReversed(currentDate) {
-        return `${
-            currentDate.getFullYear()
-        }-${
-            this.pad("00", currentDate.getMonth() + 1, true)
-        }-${
-            this.pad("00", currentDate.getDate(), true)
-        }`;
+        return `${currentDate.getFullYear()
+            }-${this.pad("00", currentDate.getMonth() + 1, true)
+            }-${this.pad("00", currentDate.getDate(), true)
+            }`;
     },
     formatDate(currentDate) {
         return `${this.pad("00", currentDate.getDate(), true)}-${this.pad(
@@ -31,6 +31,15 @@ export default {
             true
         )}:${this.pad("00", currentDate.getSeconds())}`;
     },
+    formatPrecisedTime(currentDate) {
+        return `${this.pad("00", currentDate.getHours(), true)}:${this.pad(
+            "00",
+            currentDate.getMinutes(),
+            true
+        )}:${this.pad("00", currentDate.getSeconds())
+            }.${this.pad("000", currentDate.getMilliseconds())
+            }`;
+    },
     formatDateTime(currentDate) {
         return `${this.formatDate(currentDate)} ${this.formatTime(currentDate)}`
     },
@@ -38,10 +47,10 @@ export default {
         return `${this.formatDateReversed(currentDate)} ${this.formatTime(currentDate)}`
     },
     parseDateReversedTime(reversedTime) {
-        const [year,month,date,hour,minutes,seconds] = reversedTime.split(/[- :.]/g);
+        const [year, month, date, hour, minutes, seconds] = reversedTime.split(/[- :.]/g);
         const d = new Date();
         d.setFullYear(year);
-        d.setMonth(parseInt(month)-1);
+        d.setMonth(parseInt(month) - 1);
         d.setDate(parseInt(date));
         d.setHours(parseInt(hour));
         d.setMinutes(parseInt(minutes));
@@ -49,7 +58,7 @@ export default {
         return d;
     },
     formatToDiaSemana(currentDate) {
-        switch(currentDate.getDay()) {
+        switch (currentDate.getDay()) {
             case 1:
                 return "Lunes";
             case 2:
@@ -96,6 +105,32 @@ export default {
                 return "Diciembre";
         }
     },
+    fromTipoToTable(tipo) {
+        switch (tipo) {
+            case "Objetivo":
+            case "Objetivos":
+            case "objetivo":
+            case "objetivos":
+                return "Objetivos";
+            case "Plan":
+            case "Planes":
+            case "plan":
+            case "planes":
+                return "Planes";
+            case "Evento":
+            case "Eventos":
+            case "evento":
+            case "eventos":
+                return "Eventos";
+            case "Prototipo":
+            case "Prototipos":
+            case "prototipo":
+            case "prototipos":
+                return "Prototipos";
+            default:
+                return tipo;
+        }
+    },
     fromSnakeToHuman(txt) {
         let word = txt.substr(0, 1).toUpperCase() + txt.substr(1).replace(/_[A-Za-z0-9]/g, m => " " + m.substr(1));
         word = word === "Momento efectivo" ? "Momento" : word;
@@ -105,4 +140,15 @@ export default {
     parseDateFromMomentoEfectivo(t) {
         return this.parseDateReversedTime(t);
     },
+    formatDateAsUID(currentDate) {
+        return `${this.formatDateReversed(currentDate)} ${this.formatPrecisedTime(currentDate)}`
+    },
+    generateRandomString(len, chars = DEFAULT_ALPHABET) {
+        let s = "";
+        for(let index = 0; index < len; index++) {
+            const c = chars[Math.floor(Math.random() * chars.length)];
+            s += c;
+        }
+        return s;
+    }
 }

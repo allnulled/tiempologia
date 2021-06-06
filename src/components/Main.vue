@@ -68,6 +68,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+html {
+  background-color: #E8E8E8;
+}
 * {
   box-sizing: border-box;
   font-family: Roboto;
@@ -133,8 +136,11 @@ table {
   width: 100%;
 }
 
+
+
 .form-button {
   border: 1px solid #d0d0d0;
+  border-radius: 3pt;
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.2s linear;
@@ -142,6 +148,25 @@ table {
 .form-button:hover {
   background-color: #e0e0e0;
 }
+.form-icon {
+  vertical-align: top;
+}
+.form-button.sm {
+  padding: 4px;
+}
+.form-button.xs {
+  padding: 4px;
+}
+.form-button.sm .form-icon {
+  width: 22px;
+  height: 22px;
+}
+.form-button.xs .form-icon {
+  width: 16px;
+  height: 16px;
+}
+
+
 
 .no-border-table {
   border-collapse: collapse;
@@ -240,10 +265,27 @@ table {
   max-width: 720px;
   text-align: left;
 }
-html {
-  background-color: #F8F8F8;
-}
 
+
+
+.danger-button {
+  background-color: #ffe0e0;
+}
+.danger-button:hover {
+  background-color: #ffaaaa;
+}
+.edition-button {
+  background-color: #e0e0ff;
+}
+.edition-button:hover {
+  background-color: #aaaaff;
+}
+.success-button {
+  background-color: #e0ffe0;
+}
+.success-button:hover {
+  background-color: #aaffaa;
+}
 
 
 .selectable {
@@ -294,16 +336,22 @@ html {
 .display-inline-block {
   display: inline-block;
 }
+.float-right {
+  float: right;
+}
 
 
+.data-manager-table > .tipo-evento .nombre-cell,
 .horario-table > .tipo-evento .nombre-cell,
 .vista-general-table.tipo-evento .moment-cell {
   background-color: #A0EFB0;
 }
+.data-manager-table > .tipo-objetivo .nombre-cell,
 .horario-table > .tipo-objetivo .nombre-cell,
 .vista-general-table.tipo-objetivo .moment-cell {
   background-color: #ADB3DB;
 }
+.data-manager-table > .tipo-plan .nombre-cell,
 .horario-table > .tipo-plan .nombre-cell,
 .vista-general-table.tipo-plan .moment-cell {
   background-color: #FFFFA1;
@@ -317,4 +365,27 @@ html {
   background-color: #FFFFFF;
 }
 
+.form-sm {
+  font-size: 10px;
+  padding: 4px;
+}
+
+.monospaced {
+  font-family: monospace;
+  font-size: 10px;
+}
+
+input, textarea, button, .curved {
+  border-radius: 3pt !important;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+.bg-transparent {
+  background-color: transparent !important;
+}
+.display-none {
+  display: none;
+}
 </style>

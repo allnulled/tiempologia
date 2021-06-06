@@ -1,5 +1,8 @@
 <template>
   <div class="inicio-page-component">
+    <div class="frase-motivacional" v-on:click="changeMotivacional">
+      {{ fraseMotivacional }}
+    </div>
     <div>
       <FormSelector
         :root="root"
@@ -25,8 +28,15 @@
             </div>
           </td>
           <td class="text-align-center width-100-x100">
-            <div class="text-label" style="font-size: 10px">{{ formatDate(fechaSeleccionada).replace(/-/g, "/") }}</div>
-            <div class="text-label" style="font-size: 9px">{{ formatToDiaSemana(fechaSeleccionada) }}, {{ fechaSeleccionada.getDate() }} de {{ formatToMesDelAno(fechaSeleccionada).toLowerCase() }} del {{ fechaSeleccionada.getFullYear() }}</div>
+            <div class="text-label" style="font-size: 10px">
+              {{ formatDate(fechaSeleccionada).replace(/-/g, "/") }}
+            </div>
+            <div class="text-label" style="font-size: 9px">
+              {{ formatToDiaSemana(fechaSeleccionada) }},
+              {{ fechaSeleccionada.getDate() }} de
+              {{ formatToMesDelAno(fechaSeleccionada).toLowerCase() }} del
+              {{ fechaSeleccionada.getFullYear() }}
+            </div>
           </td>
           <td>
             <div class="form-input-deployer-container">
@@ -42,7 +52,6 @@
         </tr>
       </tbody>
     </table>
-    <div class="frase-motivacional" v-on:click="changeMotivacional">{{ fraseMotivacional }}</div>
     <table
       class="no-border-table"
       data-ref="tabla-inicio-completados"
@@ -66,15 +75,13 @@
     <div v-if="paginaSeleccionada === 'Vistazo' && resultadosSeleccionados">
       <table
         class="no-border-table width-100-x100 vista-general-table"
-        :class="'tipo-' + item.tipo"
+        :class="'tipo-' + item.tipo.toLowerCase()"
         v-for="(item, indexItem) in resultadosSeleccionados"
         v-bind:key="indexItem"
       >
         <tbody class="table-group" v-if="isInFechaSeleccionada(item)">
           <tr>
-            <td
-              class="text-align-left v-align-top"
-            >
+            <td class="text-align-left v-align-top">
               <div class="moment-cell text-label cursor-pointer">
                 <div>{{ item.momento_efectivo.split(" ")[1] }}</div>
                 <div class="text-align-center uppercased">{{ item.tipo }}</div>
@@ -113,47 +120,111 @@
       </table>
     </div>
     <div v-if="paginaSeleccionada === 'Horario' && resultadosPorFranjas">
-      <table class="no-border-table width-100-x100">
+      <table class="no-border-table width-100-x100" style="margin-top: 10px;">
         <tbody
           v-for="(datosFranja, franja) in resultadosPorFranjas"
-          v-bind:key="franja">
+          v-bind:key="franja"
+        >
           <tr v-if="datosFranja.length">
-            <td class="property-cell moment-cell"
-              :class="{'as-time-passed':esFranjaPasadaSegunHora(franja)}">
+            <td
+              class="property-cell moment-cell"
+              :class="{ 'as-time-passed': esFranjaPasadaSegunHora(franja) }"
+            >
               {{ franja }}
             </td>
             <td
               v-on:click="toggleHorarioRow(franja)"
               class="value-cell selectable"
-              :class="{selected: franjaSeleccionada === franja}">
+              :class="{ selected: franjaSeleccionada === franja }"
+            >
               {{ sumUpDatosFranja(datosFranja) }}
             </td>
           </tr>
           <tr v-if="datosFranja.length && franjaSeleccionada === franja">
             <td class="width-100-x100" colspan="100">
-              <div style="height: 1px;"></div>
-              <table class="horario-table no-border-table width-100-x100">
+              <div style="height: 1px"></div>
+              <table
+                class="horario-table no-border-table width-100-x100"
+                data-ref="inicio-table-horario"
+              >
                 <tbody
                   v-for="(itemFranja, itemIndex) in datosFranja"
                   v-bind:key="franja + '+' + itemIndex"
-                  :class="'tipo-' + itemFranja.tipo">
+                  :class="'tipo-' + itemFranja.tipo.toLowerCase()"
+                >
                   <tr class="nombre-row">
-                    <td class="nombre-cell" colspan="100" v-on:click="itemDeFranjaSeleccionado = itemDeFranjaSeleccionado === itemIndex ? -1 : itemIndex">
-                      {{ itemFranja.nombre }}
+                    <td
+                      class="nombre-cell"
+                      colspan="100"
+                      v-on:click="
+                        itemDeFranjaSeleccionado =
+                          itemDeFranjaSeleccionado === itemIndex
+                            ? -1
+                            : itemIndex
+                      "
+                    >
+                      <span class="float-left">{{ itemFranja.nombre }}</span>
+                      <span
+                        class="form-button xs display-inline-block float-right danger-button"
+                        style="margin-right: 4px"
+                        v-on:click="eliminarItem($event, itemFranja, itemIndex)"
+                      >
+                        <img
+                          class="form-icon"
+                          src="@/components/Forms/icons/trash.png"
+                        />
+                      </span>
+                      <span
+                        class="form-button xs display-inline-block float-right success-button"
+                        style="margin-right: 4px"
+                        v-if="itemFranja.tipo.toLowerCase() === 'plan'"
+                        v-on:click="insertarEventoSegunPlan($event, itemFranja, itemIndex)"
+                      >
+                        <img
+                          class="form-icon"
+                          src="@/components/Forms/icons/check.png"
+                        />
+                      </span>
                     </td>
                   </tr>
                   <tr
                     v-for="(itemValue, itemProperty) in itemFranja"
                     v-bind:key="franja + '+' + itemIndex + '+' + itemProperty"
-                    :class="{hidden: itemIndex !== itemDeFranjaSeleccionado}">
-                    <td class="property-cell moment-cell">{{ fromSnakeToHuman(itemProperty) }}:</td>
+                    :class="{ hidden: itemIndex !== itemDeFranjaSeleccionado }"
+                  >
+                    <td class="property-cell moment-cell">
+                      {{ fromSnakeToHuman(itemProperty) }}:
+                    </td>
                     <td class="value-cell">{{ itemValue }}</td>
-                  </tr>
-                  <tr>
-                    <td style="min-height: 5px;" colspan="100"></td>
                   </tr>
                 </tbody>
               </table>
+            </td>
+          </tr>
+        </tbody>
+        <tbody
+          v-if="
+            formatDateReversed(fechaSeleccionada) !==
+            formatDateReversed(new Date())
+          "
+        >
+          <tr>
+            <td colspan="100" style="min-height: 5px"></td>
+          </tr>
+          <tr>
+            <td style="min-height: 5px" colspan="100">
+              <span class="float-right">
+                <div class="form-input-deployer-container">
+                  <div class="form-input-deployer-icon">
+                    <img
+                      class="form-input-deployer"
+                      style="background-color: #e0e0e0"
+                      src="@/components/Forms/icons/reusage.png"
+                      v-on:click="reusaPlanesDelDia()"
+                    />
+                  </div>
+                </div>
+              </span>
             </td>
           </tr>
         </tbody>
@@ -163,6 +234,7 @@
 </template>
 
 <script>
+// import axios from "axios";
 import store from "@/assets/js/store.js";
 import formsUtils from "@/assets/js/forms-utils.js";
 import motivacionales from "@/assets/js/motivationals.json";
@@ -190,7 +262,8 @@ export default {
   },
   data() {
     return {
-      fraseMotivacional: motivacionales[Math.floor(Math.random() * motivacionales.length)],
+      fraseMotivacional:
+        motivacionales[Math.floor(Math.random() * motivacionales.length)],
       paginaSeleccionada: "Horario",
       paginasDeInicio: [{ nombre: "Horario" }, { nombre: "Vistazo" }],
       franjaSeleccionada: undefined,
@@ -212,6 +285,7 @@ export default {
       resultadosSeleccionados: undefined,
       resultadosPorFranjas: undefined,
       filaSeleccionada: -1,
+      fraseGeneradaPar: false,
       tipoDeDatoSeleccionado: "Todos",
       tiposDeDato: [
         {
@@ -228,7 +302,6 @@ export default {
         },
       ],
     };
-
   },
   watch: {
     resultadosPlanes(newValue) {
@@ -260,6 +333,7 @@ export default {
       const currentDate = new Date(this.fechaSeleccionada);
       currentDate.setDate(this.fechaSeleccionada.getDate() + 1);
       this.fechaSeleccionada = currentDate;
+      this.franjaSeleccionada = undefined;
       this.updateResultadosPorFranjas();
     },
     async refreshData() {
@@ -270,10 +344,10 @@ export default {
         this.resultadosPlanes = await store.select("Planes");
         this.resultadosEventos = await store.select("Eventos");
         this.resultadosTodos = [].concat(
-          this.resultadosObjetivos,
+          this.resultadosEventos,
           this.resultadosPlanes,
-          this.resultadosEventos
-        );
+          this.resultadosObjetivos,
+        ).sort(SORT_BY_MOMENTO_EFECTIVO);
         this.resultadosSeleccionados = this[
           "resultados" + this.tipoDeDatoSeleccionado
         ].sort(SORT_BY_MOMENTO_EFECTIVO);
@@ -305,27 +379,45 @@ export default {
       return date1 === date2;
     },
     esFranjaPasadaSegunHora(franja) {
-      franja.split(":").map(f => parseInt(f))[0];
+      franja.split(":").map((f) => parseInt(f))[0];
     },
     formatResultadosPorFranjas(resultados) {
       const fecha = this.fechaSeleccionada;
       const resultadosPorFranjas = {};
-      for(let indexHoras = 0; indexHoras < 24; indexHoras++) {
+      for (let indexHoras = 0; indexHoras < 24; indexHoras++) {
         let baseFranja = this.pad("00", indexHoras, true);
         resultadosPorFranjas[`${baseFranja}:00`] = [];
         resultadosPorFranjas[`${baseFranja}:20`] = [];
         resultadosPorFranjas[`${baseFranja}:40`] = [];
-        for(let indexResultados = 0; indexResultados < resultados.length; indexResultados++) {
+        for (
+          let indexResultados = 0;
+          indexResultados < resultados.length;
+          indexResultados++
+        ) {
           const resultado = resultados[indexResultados];
-          if(resultado.momento_efectivo) {
-            const momento_intervalo_inicio = this.formatDateReversedTime(fecha).replace(/[0-9]+$/g, "00");
-            const [ano1str,mes1str,dia1str,hora1str,minuto1str] = resultado.momento_efectivo.split(/[-: ]/g);
+          if (resultado.momento_efectivo) {
+            const momento_intervalo_inicio = this.formatDateReversedTime(
+              fecha
+            ).replace(/[0-9]+$/g, "00");
+            const [
+              ano1str,
+              mes1str,
+              dia1str,
+              hora1str,
+              minuto1str,
+            ] = resultado.momento_efectivo.split(/[-: ]/g);
             const ano1 = parseInt(ano1str);
             const mes1 = parseInt(mes1str);
             const dia1 = parseInt(dia1str);
             const hora1 = parseInt(hora1str);
             const minuto1 = parseInt(minuto1str);
-            const [ano2str,mes2str,dia2str] = momento_intervalo_inicio.replace(/[0-9][0-9]:[0-9][0-9]$/g, "00:00").split(/[-: ]/g);
+            const [
+              ano2str,
+              mes2str,
+              dia2str,
+            ] = momento_intervalo_inicio
+              .replace(/[0-9][0-9]:[0-9][0-9]$/g, "00:00")
+              .split(/[-: ]/g);
             const ano2 = parseInt(ano2str);
             const mes2 = parseInt(mes2str);
             const dia2 = parseInt(dia2str);
@@ -334,20 +426,21 @@ export default {
             const minuto20 = 20;
             const minuto40 = 40;
             window.noop(minuto00, minuto20, minuto40);
-            const isInFranja = ano1 === ano2 
-              && mes1 === mes2
-              && dia1 === dia2
-              && hora1 === hora2;
+            const isInFranja =
+              ano1 === ano2 &&
+              mes1 === mes2 &&
+              dia1 === dia2 &&
+              hora1 === hora2;
             /*
             console.log("1str:", resultado.momento_efectivo, ano1str, mes1str, dia1str, hora1str, momento_intervalo_inicio);
             console.log("1:", ano1, ano2 , mes1, mes2, dia1, dia2, hora1, hora2, momento_intervalo_inicio);
             //*/
-            if(isInFranja) {
-              if(minuto1 >= 0 && minuto1 <= 19) {
+            if (isInFranja) {
+              if (minuto1 >= 0 && minuto1 <= 19) {
                 resultadosPorFranjas[`${baseFranja}:00`].push(resultado);
-              } else if(minuto1 >= 20 && minuto1 <= 39) {
+              } else if (minuto1 >= 20 && minuto1 <= 39) {
                 resultadosPorFranjas[`${baseFranja}:20`].push(resultado);
-              } else if(minuto1 >= 40 && minuto1 <= 59) {
+              } else if (minuto1 >= 40 && minuto1 <= 59) {
                 resultadosPorFranjas[`${baseFranja}:40`].push(resultado);
               }
             }
@@ -360,43 +453,124 @@ export default {
       console.log(datosDeFranja);
     },
     updateResultadosPorFranjas() {
-      this.resultadosPorFranjas = this.formatResultadosPorFranjas(this.resultadosTodos);
+      this.resultadosPorFranjas = this.formatResultadosPorFranjas(
+        this.resultadosTodos
+      );
     },
     toggleHorarioRow(indice) {
-      this.franjaSeleccionada = this.franjaSeleccionada === indice ? -1 : indice;
+      this.franjaSeleccionada =
+        this.franjaSeleccionada === indice ? -1 : indice;
       this.itemDeFranjaSeleccionado = -1;
     },
     sumUpDatosFranja(datos) {
-      const objetivos = datos.filter(e => e.tipo === "objetivo").length;
-      const planes = datos.filter(e => e.tipo === "plan").length;
-      const eventos = datos.filter(e => e.tipo === "evento").length;
+      const objetivos = [...datos].filter(
+        (e) => e.tipo.toLowerCase() === "objetivo"
+      ).length;
+      const planes = [...datos].filter((e) => e.tipo.toLowerCase() === "plan")
+        .length;
+      const eventos = [...datos].filter(
+        (e) => e.tipo.toLowerCase() === "evento"
+      ).length;
       let messages = [];
-      if(eventos) {
-        messages.push(eventos > 1 ? `${eventos} eventos` : `${eventos} eventos`);
-      }
-      if(objetivos) {
-        messages.push(objetivos > 1 ? `${objetivos} objetivos` : `${objetivos} objetivo`);
-      }
-      if(planes) {
+      if (planes) {
         messages.push(planes > 1 ? `${planes} planes` : `${planes} plan`);
       }
+      if (eventos) {
+        messages.push(
+          eventos > 1 ? `${eventos} eventos` : `${eventos} eventos`
+        );
+      }
+      if (objetivos) {
+        messages.push(
+          objetivos > 1 ? `${objetivos} objetivos` : `${objetivos} objetivo`
+        );
+      }
       let message = "";
-      if(messages.length) {
+      if (messages.length) {
         message += "Hay ";
-        message += messages.reduce((item, output, index) => {
-          if(index === messages.length - 1) {
-            message += " and ";
-          } else if(index !== 0) {
-            message += ", ";
+        for (let index = 0; index < messages.length; index++) {
+          const messageUnit = messages[index];
+          if (index === 0) {
+            message += messageUnit;
+          } else {
+            if (index === messages.length - 1) {
+              message += " y ";
+              message += messageUnit;
+            } else {
+              message += ", ";
+              message += messageUnit;
+            }
           }
-          message += item;
-          return output;
-        }, "");
+        }
       }
       return message;
     },
     changeMotivacional() {
-      this.fraseMotivacional = motivacionales[Math.floor(Math.random() * motivacionales.length)];
+      this.fraseMotivacional =
+        motivacionales[Math.floor(Math.random() * motivacionales.length)];
+    },
+    async eliminarItem(event, item, indexItem) {
+      try {
+        console.log(event, item, indexItem);
+        event.stopPropagation();
+        const isConfirmed = window.confirm(
+          `Quieres eliminar el «${item.tipo.toLowerCase()}»: ${JSON.stringify(
+            item,
+            null,
+            4
+          )}?`
+        );
+        if (isConfirmed) {
+          const targetModel = this.fromTipoToTable(item.tipo);
+          store.delete(targetModel, item.id);
+          return this.refreshData();
+        }
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    async insertarEventoSegunPlan(event, plan, indexPlan) {
+      try {
+        console.log(event, plan, indexPlan);
+        event.stopPropagation();
+        const supuestoEvento = {
+          ...plan,
+        };
+        supuestoEvento.tipo = "evento";
+        delete supuestoEvento.id;
+        supuestoEvento.nombre = supuestoEvento.nombre.replace(store.REGEX_FOR_DATE_IN_THE_END, "");
+        const isConfirmed = window.confirm(
+          "¿Quieres crear un evento confirmando este plan? " +
+            JSON.stringify(supuestoEvento, null, 4)
+        );
+        if (isConfirmed) {
+          const resultado = await store.insertEventoInCascade(supuestoEvento, this.resultadosPrototipos.filter(x => x.tipo === "Objetivo"));
+          console.log(resultado);
+        }
+        await this.refreshData();
+        // @TODO:
+        // @TODO:
+        // @TODO:
+        // @TODO:
+        // @TODO:
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    reusaPlanesDelDia() {
+      const planesDelDia = this.resultadosPlanes.filter(
+        (x) =>
+          x.momento_efectivo.substr(0, 10) ===
+          this.formatDateReversed(this.fechaSeleccionada)
+      );
+      console.log(planesDelDia);
+      // @TODO:
+      // @TODO:
+      // @TODO:
+      // @TODO:
+      // @TODO:
     },
     ...formsUtils,
   },
@@ -423,5 +597,18 @@ export default {
   box-shadow: 0 0 2px black;
   line-height: 26px;
   cursor: pointer;
+}
+.satisfy-plan-button {
+  background-color: #ffffff;
+  transition: background-color 0.2s linear, color 0.2s linear;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid #333;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.satisfy-plan-button:hover {
+  background-color: #333;
+  color: white;
 }
 </style>
