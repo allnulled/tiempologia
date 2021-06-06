@@ -120,7 +120,7 @@
       </table>
     </div>
     <div v-if="paginaSeleccionada === 'Horario' && resultadosPorFranjas">
-      <table class="no-border-table width-100-x100" style="margin-top: 10px;">
+      <table class="no-border-table width-100-x100" style="margin-top: 2px">
         <tbody
           v-for="(datosFranja, franja) in resultadosPorFranjas"
           v-bind:key="franja"
@@ -154,8 +154,8 @@
                 >
                   <tr class="nombre-row">
                     <td
-                      class="nombre-cell"
-                      colspan="100"
+                      class="nombre-cell width-100-x100"
+                      :colspan="itemDeFranjaSeleccionado === itemIndex ? 1 : 3"
                       v-on:click="
                         itemDeFranjaSeleccionado =
                           itemDeFranjaSeleccionado === itemIndex
@@ -164,67 +164,120 @@
                       "
                     >
                       <span class="float-left">{{ itemFranja.nombre }}</span>
-                      <span
-                        class="form-button xs display-inline-block float-right danger-button"
-                        style="margin-right: 4px"
-                        v-on:click="eliminarItem($event, itemFranja, itemIndex)"
-                      >
-                        <img
-                          class="form-icon"
-                          src="@/components/Forms/icons/trash.png"
-                        />
-                      </span>
-                      <span
-                        class="form-button xs display-inline-block float-right success-button"
-                        style="margin-right: 4px"
-                        v-if="itemFranja.tipo.toLowerCase() === 'plan'"
-                        v-on:click="insertarEventoSegunPlan($event, itemFranja, itemIndex)"
-                      >
-                        <img
-                          class="form-icon"
-                          src="@/components/Forms/icons/check.png"
-                        />
-                      </span>
+                    </td>
+                    <td v-if="itemDeFranjaSeleccionado === itemIndex">
+                      <table class="no-border-table width-100-x100">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div
+                                class="form-button sm success-button"
+                                style="margin-left: 2px"
+                                v-if="itemFranja.tipo.toLowerCase() === 'plan'"
+                                v-on:click="
+                                  insertarEventoSegunPlan(
+                                    $event,
+                                    itemFranja,
+                                    itemIndex
+                                  )
+                                "
+                              >
+                                <img
+                                  class="form-icon"
+                                  src="@/components/Forms/icons/check.png"
+                                />
+                              </div>
+                            </td>
+                            <td>
+                              <div
+                                class="form-button sm danger-button"
+                                style="margin-left: 2px"
+                                v-on:click="
+                                  eliminarItem($event, itemFranja, itemIndex)
+                                "
+                              >
+                                <img
+                                  class="form-icon"
+                                  src="@/components/Forms/icons/trash.png"
+                                />
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </td>
                   </tr>
-                  <tr
-                    v-for="(itemValue, itemProperty) in itemFranja"
-                    v-bind:key="franja + '+' + itemIndex + '+' + itemProperty"
-                    :class="{ hidden: itemIndex !== itemDeFranjaSeleccionado }"
-                  >
-                    <td class="property-cell moment-cell">
-                      {{ fromSnakeToHuman(itemProperty) }}:
+                  <tr>
+                    <td
+                      colspan="100"
+                      v-if="itemIndex === itemDeFranjaSeleccionado"
+                    >
+                      <table class="no-border-table width-100-x100">
+                        <tbody>
+                          <tr
+                            v-for="(itemValue, itemProperty) in itemFranja"
+                            v-bind:key="
+                              franja + '+' + itemIndex + '+' + itemProperty
+                            "
+                          >
+                            <td class="property-cell moment-cell">
+                              {{ fromSnakeToHuman(itemProperty) }}:
+                            </td>
+                            <td class="value-cell width-100-x100">
+                              {{ itemValue }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </td>
-                    <td class="value-cell">{{ itemValue }}</td>
                   </tr>
                 </tbody>
               </table>
             </td>
           </tr>
         </tbody>
-        <tbody
-          v-if="
-            formatDateReversed(fechaSeleccionada) !==
-            formatDateReversed(new Date())
-          "
-        >
+        <tbody>
           <tr>
             <td colspan="100" style="min-height: 5px"></td>
           </tr>
           <tr>
             <td style="min-height: 5px" colspan="100">
+
               <span class="float-right">
-                <div class="form-input-deployer-container">
-                  <div class="form-input-deployer-icon">
+                  <div
+                    class="form-button sm selectable"
+                    :class="{selected: filaDeVolcadoSeleccionada}"
+                    v-on:click="despliegaFechaVolcado()">
                     <img
-                      class="form-input-deployer"
-                      style="background-color: #e0e0e0"
+                      class="form-icon"
                       src="@/components/Forms/icons/reusage.png"
-                      v-on:click="reusaPlanesDelDia()"
                     />
                   </div>
-                </div>
               </span>
+            </td>
+          </tr>
+          <tr v-if="filaDeVolcadoSeleccionada">
+            <td colspan="100">
+              <div style="background-color: #f8f8f8; padding: 4px">
+                <FormMoment
+                  :root="root"
+                  label-preset="Destino del volcado:"
+                  :on-change-preset="setMomentoDestinoVolcado"
+                  :internal-value-for-date-preset="formatDate(fechaDeVolcado)"
+                  :internal-value-for-time-preset="'00:00:00'"
+                  ref="Momento_del_volcado"
+                />
+                <div
+                  class="form-button sm success-button text-align-center"
+                  v-on:click="volcarPlanesSegunDia"
+                >
+                  <img
+                    src="@/components/Forms/icons/check.png"
+                    alt="Volcar"
+                    class="form-icon"
+                  />
+                </div>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -261,6 +314,13 @@ export default {
     });
   },
   data() {
+    const nowDate = new Date();
+    const tomorrowDate = new Date(nowDate);
+    tomorrowDate.setDate(nowDate.getDate() + 1);
+    tomorrowDate.setHours(0);
+    tomorrowDate.setMinutes(0);
+    tomorrowDate.setSeconds(0);
+    tomorrowDate.setMilliseconds(0);
     return {
       fraseMotivacional:
         motivacionales[Math.floor(Math.random() * motivacionales.length)],
@@ -269,6 +329,7 @@ export default {
       franjaSeleccionada: undefined,
       itemDeFranjaSeleccionado: -1,
       fechaSeleccionada: new Date(),
+      fechaDeVolcado: tomorrowDate,
       intensidadEquivalenciaTiempo: TIEMPO_x20_MINUTOS,
       porcentajeDeEventosCompletados: "-",
       porcentajeDeObjetivosCompletados: "-",
@@ -285,6 +346,7 @@ export default {
       resultadosSeleccionados: undefined,
       resultadosPorFranjas: undefined,
       filaSeleccionada: -1,
+      filaDeVolcadoSeleccionada: false,
       fraseGeneradaPar: false,
       tipoDeDatoSeleccionado: "Todos",
       tiposDeDato: [
@@ -327,6 +389,7 @@ export default {
       const currentDate = new Date(this.fechaSeleccionada);
       currentDate.setDate(this.fechaSeleccionada.getDate() - 1);
       this.fechaSeleccionada = currentDate;
+        this.filaDeVolcadoSeleccionada = false;
       this.updateResultadosPorFranjas();
     },
     incrementaFecha() {
@@ -334,6 +397,7 @@ export default {
       currentDate.setDate(this.fechaSeleccionada.getDate() + 1);
       this.fechaSeleccionada = currentDate;
       this.franjaSeleccionada = undefined;
+        this.filaDeVolcadoSeleccionada = false;
       this.updateResultadosPorFranjas();
     },
     async refreshData() {
@@ -343,21 +407,26 @@ export default {
         this.resultadosPrototipos = await store.select("Prototipos");
         this.resultadosPlanes = await store.select("Planes");
         this.resultadosEventos = await store.select("Eventos");
-        this.resultadosTodos = [].concat(
-          this.resultadosEventos,
-          this.resultadosPlanes,
-          this.resultadosObjetivos,
-        ).sort(SORT_BY_MOMENTO_EFECTIVO);
+        this.resultadosTodos = []
+          .concat(
+            this.resultadosEventos,
+            this.resultadosPlanes,
+            this.resultadosObjetivos
+          )
+          .sort(SORT_BY_MOMENTO_EFECTIVO);
         this.resultadosSeleccionados = this[
           "resultados" + this.tipoDeDatoSeleccionado
         ].sort(SORT_BY_MOMENTO_EFECTIVO);
         this.updateResultadosPorFranjas();
+        this.itemDeFranjaSeleccionado = -1;
+        this.filaDeVolcadoSeleccionada = false;
       } catch (error) {
         console.error(error);
         throw error;
       }
     },
     seleccionarPagina(pagina) {
+        this.filaDeVolcadoSeleccionada = false;
       this.paginaSeleccionada = pagina;
     },
     seleccionarTipoDeDato(tipoDeDato) {
@@ -372,6 +441,9 @@ export default {
     },
     isInFechaSeleccionada(item) {
       const dateO = this.fechaSeleccionada;
+      if (typeof item.momento_efectivo !== "string") {
+        return false;
+      }
       const dateD = this.parseDateFromMomentoEfectivo(item.momento_efectivo);
       const date1 = `${dateO.getDate()}.${dateO.getMonth()}.${dateO.getFullYear()}`;
       const date2 = `${dateD.getDate()}.${dateD.getMonth()}.${dateD.getFullYear()}`;
@@ -539,38 +611,70 @@ export default {
         };
         supuestoEvento.tipo = "evento";
         delete supuestoEvento.id;
-        supuestoEvento.nombre = supuestoEvento.nombre.replace(store.REGEX_FOR_DATE_IN_THE_END, "");
+        supuestoEvento.nombre = supuestoEvento.nombre.replace(
+          store.REGEX_FOR_DATE_IN_THE_END,
+          ""
+        );
         const isConfirmed = window.confirm(
           "¿Quieres crear un evento confirmando este plan? " +
             JSON.stringify(supuestoEvento, null, 4)
         );
         if (isConfirmed) {
-          const resultado = await store.insertEventoInCascade(supuestoEvento, this.resultadosPrototipos.filter(x => x.tipo === "Objetivo"));
+          const resultado = await store.insertAnyInCascade(
+            supuestoEvento,
+            this.resultadosPrototipos.filter((x) => x.tipo === "Objetivo")
+          );
           console.log(resultado);
         }
         await this.refreshData();
-        // @TODO:
-        // @TODO:
-        // @TODO:
-        // @TODO:
-        // @TODO:
       } catch (error) {
         console.error(error);
         throw error;
       }
     },
-    reusaPlanesDelDia() {
-      const planesDelDia = this.resultadosPlanes.filter(
-        (x) =>
-          x.momento_efectivo.substr(0, 10) ===
-          this.formatDateReversed(this.fechaSeleccionada)
-      );
-      console.log(planesDelDia);
-      // @TODO:
-      // @TODO:
-      // @TODO:
-      // @TODO:
-      // @TODO:
+    async volcarPlanesSegunDia() {
+      try {
+        const results = [];
+        const planesDelDia = this.resultadosPlanes.filter(
+          (x) =>
+            x.momento_efectivo.substr(0, 10) ===
+            this.formatDateReversed(this.fechaSeleccionada)
+        );
+        const fechaVolcado = this.fechaDeVolcado;
+        const formattedFechaSeleccionada = this.formatDateReversed(this.fechaSeleccionada);
+        const formattedFechaVolcado = this.formatDateReversed(fechaVolcado);
+        if(formattedFechaSeleccionada === formattedFechaVolcado) {
+          window.alert("No puedes volcar los planes de un día a ese mismo día.");
+          return false;
+        }
+        const isConfirmed = window.confirm(`¿Quieres volcar los ${planesDelDia.length} planes del día ${formattedFechaSeleccionada} al día ${formattedFechaVolcado}?`);
+        if(!isConfirmed) {
+          return false;
+        }
+        for (let index = 0; index < planesDelDia.length; index++) {
+          const planDelDia = { ...planesDelDia[index] };
+          delete planDelDia.id;
+          planDelDia.nombre = planDelDia.nombre.replace(store.REGEX_FOR_DATE_IN_THE_END, "");
+          planDelDia.momento_efectivo = this.formatDateReversedTime(
+            fechaVolcado
+          );
+          const result = await store.insertAnyInCascade(planDelDia);
+          results.push(result);
+        }
+        this.filaDeVolcadoSeleccionada = -1;
+        this.fechaSeleccionada = this.fechaDeVolcado;
+        await this.refreshData();
+        return results;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    setMomentoDestinoVolcado(dateFormatted) {
+      this.fechaDeVolcado = this.parseDateFromMomentoEfectivo(dateFormatted);
+    },
+    despliegaFechaVolcado() {
+      this.filaDeVolcadoSeleccionada = !this.filaDeVolcadoSeleccionada;
     },
     ...formsUtils,
   },

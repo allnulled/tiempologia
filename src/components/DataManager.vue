@@ -117,10 +117,10 @@
       >
         <tr
           v-if="
-            targetModel === 'Prototipos' ||
-            modelData.momento_efectivo.split(' ')[0] ===
-              formatDateReversed(selectedDate)
-          "
+            targetModel === 'Prototipos' || (
+              modelData.momento_efectivo && 
+              modelData.momento_efectivo.split(' ')[0] === formatDateReversed(selectedDate)
+          )"
           class="nombre-row"
           :class="{ selected: selectedModel === modelIndex }"
         >
@@ -146,7 +146,7 @@
               }})</span
             >
           </td>
-          <td v-if="selectedModel === modelIndex" style="border-bottom: 1px solid #FFFFFF;">
+          <td v-if="selectedModel === modelIndex">
             <div class="form-button sm danger-button">
                 <img
                   class="form-icon"
@@ -520,7 +520,7 @@ export default {
       this.dataPrototiposDeEventos = newValue.filter(
         (i) => i.tipo === "Evento"
       );
-      this.dataPrototiposDePlanes = newValue;
+      this.dataPrototiposDePlanes = this.dataPrototiposDeEventos;
       this.dataPrototiposPropios = this["dataPrototiposDe" + this.targetModel];
     },
   },
@@ -629,11 +629,11 @@ export default {
 
 
         const results = [];
-        const result = await store.insertEventoInCascade(adaptedValue, this.dataPrototiposDeObjetivos);
-
-
-
+        const result = await store.insertAnyInCascade(adaptedValue, this.dataPrototiposDeObjetivos, this.targetModel);
         results.push(result);
+
+
+
         console.log("INSERT RESULT:", results);
         this.internalValue = this.generateFreshValue();
         this.mode = "see";
@@ -653,7 +653,7 @@ export default {
     },
     fulfillPrototipo(prototipo) {
       const prototipoItem = this.dataPrototipos.filter(
-        (p) => p.nombre === prototipo
+        (p) => (p.nombre === prototipo) || (p.nombre.replace(store.REGEX_FOR_DATE_IN_THE_END, "") === prototipo)
       )[0];
       Object.keys(prototipoItem).forEach((propertyPrototipo) => {
         const p =
@@ -662,11 +662,11 @@ export default {
         if (p === "Id") {
           return;
         }
+        const tempValue = typeof prototipoItem[propertyPrototipo] === 'string' ? prototipoItem[propertyPrototipo].replace(store.REGEX_FOR_DATE_IN_THE_END, "") : prototipoItem[propertyPrototipo];
         if (p in this.$refs) {
-          this.$refs[p].internalValue = prototipoItem[propertyPrototipo];
+          this.$refs[p].internalValue = tempValue;
         } else {
-          this.internalValue[propertyPrototipo] =
-            prototipoItem[propertyPrototipo];
+          this.internalValue[propertyPrototipo] = tempValue;
         }
       });
     },

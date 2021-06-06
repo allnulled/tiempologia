@@ -96,37 +96,44 @@ const exportDatabase = async function () {
     }
 };
 
-const insertEventoInCascade = async function (dataEvento, prototiposDeObjetivos=[]) {
+const insertAnyInCascade = async function (dataObject, prototiposDeObjetivos=[], tipoEspecifico = undefined) {
     try {
-        delete dataEvento.id;
-        if (dataEvento.tipo.toLowerCase() !== "Prototipos") {
-          dataEvento.nombre += ` [${utils.formatDateAsUID(new Date())}]`;
+        delete dataObject.id;
+        const currentTable = utils.fromTipoToTable(dataObject.tipo);
+        if (currentTable !== "Prototipos") {
+          dataObject.nombre += ` [${utils.formatDateAsUID(new Date())}]`;
         }
-        dataEvento.puntuacion_de_objetivos = (
-          dataEvento.puntuacion_de_objetivos || []
+        dataObject.puntuacion_de_objetivos = (
+          dataObject.puntuacion_de_objetivos || []
         ).filter((i) => typeof i.nombre === "string" && i.nombre.length);
         const results = [];
-        if (dataEvento.tipo.toLowerCase() === "evento") {
-          const objs = dataEvento.puntuacion_de_objetivos;
+        if (currentTable !== "Prototipos") {
+          const objs = dataObject.puntuacion_de_objetivos;
           for (let indexObj = 0; indexObj < objs.length; indexObj++) {
             const obj = objs[indexObj];
             const objPrototipo = prototiposDeObjetivos.filter(
               (ob) => ob.nombre === obj.nombre && ob.tipo === 'Objetivo'
             )[0];
             const obj2 = Object.assign({}, objPrototipo, obj);
-            obj2.momento_efectivo = dataEvento.momento_efectivo;
+            obj2.momento_efectivo = dataObject.momento_efectivo;
             if(!obj2.nombre.match(REGEX_FOR_DATE_IN_THE_END)) {
               obj2.nombre += ` [${utils.formatDateAsUID(new Date)}]`;
             }
+            obj2.tipo = "Objetivo";
+            if(!obj2.intensidad) {
+                obj2.intensidad = 1;
+            }
             delete obj2.id;
-            const tempResult = await this.insert("Objetivos", [obj2]);
-            results.push(tempResult);
+            if(currentTable === "Eventos") {
+                const tempResult = await this.insert("Objetivos", [obj2]);
+                results.push(tempResult);
+            }
           }
         }
-        console.log("20 - INSERT:", dataEvento.tipo.toLowerCase(), dataEvento);
-        const tablename = utils.fromTipoToTable(dataEvento.tipo);
-        const result = await this.insert(tablename, [dataEvento]);
-        return result;
+        const tablename = utils.fromTipoToTable(tipoEspecifico || dataObject.tipo);
+        const result = await this.insert(tablename, [dataObject]);
+        results.push(result);
+        return results;
     } catch (error) {
         console.error(error);
         throw error;
@@ -142,6 +149,6 @@ export default {
     importDatabase,
     exportDatabase,
     MODELS,
-    insertEventoInCascade,
+    insertAnyInCascade,
     REGEX_FOR_DATE_IN_THE_END,
 };

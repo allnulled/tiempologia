@@ -149,7 +149,7 @@ table {
   background-color: #e0e0e0;
 }
 .form-icon {
-  vertical-align: top;
+  vertical-align: middle;
 }
 .form-button.sm {
   padding: 4px;
@@ -220,7 +220,6 @@ table {
   border-top: 1px solid white;
 }
 .nombre-cell {
-  border-bottom: 1px solid white;
   font-size: 11px;
   padding: 10px;
 }
@@ -239,7 +238,6 @@ table {
   background-color: #E0E0E0;;
 }
 .table-group {
-  border-bottom: 1px solid white;
   background-color: #E0E0E0;
 }
 .table-group > tr:hover {
@@ -341,18 +339,18 @@ table {
 }
 
 
-.data-manager-table > .tipo-evento .nombre-cell,
-.horario-table > .tipo-evento .nombre-cell,
+.data-manager-table > .tipo-evento tr.nombre-row > td,
+.horario-table > .tipo-evento tr.nombre-row > td,
 .vista-general-table.tipo-evento .moment-cell {
   background-color: #A0EFB0;
 }
-.data-manager-table > .tipo-objetivo .nombre-cell,
-.horario-table > .tipo-objetivo .nombre-cell,
+.data-manager-table > .tipo-objetivo tr.nombre-row > td,
+.horario-table > .tipo-objetivo tr.nombre-row > td,
 .vista-general-table.tipo-objetivo .moment-cell {
   background-color: #ADB3DB;
 }
-.data-manager-table > .tipo-plan .nombre-cell,
-.horario-table > .tipo-plan .nombre-cell,
+.data-manager-table > .tipo-plan tr.nombre-row > td,
+.horario-table > .tipo-plan tr.nombre-row > td,
 .vista-general-table.tipo-plan .moment-cell {
   background-color: #FFFFA1;
 }

@@ -42,7 +42,7 @@
         v-bind:key="indexValue"
         v-on:click="selectValue(indexValue)"
       >
-        {{ possibleValues[indexValue][propertyToShow] }}
+        {{ typeof possibleValue[propertyToShow] === 'string' ? possibleValue[propertyToShow].replace(REGEX_FOR_DATE_IN_THE_END, "") : possibleValue[propertyToShow] }}
       </div>
     </div>
 
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import store from "@/assets/js/store.js";
+
 export default {
   name: "FormSelector",
   components: {},
@@ -84,6 +86,7 @@ export default {
   },
   data() {
     return {
+      REGEX_FOR_DATE_IN_THE_END: store.REGEX_FOR_DATE_IN_THE_END,
       label: typeof this.labelPreset === "string" ? this.labelPreset : "Select any of:",
       propertyToShow: this.propertyToShowPreset || "id",
       internalValue: this.internalValuePreset || undefined,
@@ -106,7 +109,8 @@ export default {
     },
     selectValue(index) {
       const selectedItem = this.possibleValues[index];
-      this.internalValue = selectedItem[this.propertyToShow];
+      const valueBrute = selectedItem[this.propertyToShow];
+      this.internalValue = typeof valueBrute === 'string' ? valueBrute.replace(store.REGEX_FOR_DATE_IN_THE_END, "") : valueBrute;
       this.isSelected = false;
     },
   },
