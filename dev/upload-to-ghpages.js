@@ -20,7 +20,7 @@
 const SETTINGS = {
     gitRepositoryURL: require(__dirname + "/../package.json").repository.url.replace(/^git\+/g, ""),
     temporaryFolder: __dirname + "/../temporary",
-    distributionFolder: __dirname + "/../dist",
+    distributionFolder: __dirname + "/../dist/tiempologia",
     projectFolder: __dirname + "/.."
 };
 const rimraf = require("rimraf");
