@@ -1,15 +1,1 @@
-{
-    "name": "Tiempología: Control de cuerpo y mente",
-    "short_name": "Tiempología",
-    "start_url": "index.html",
-    "display": "standalone",
-    "theme_color": "#F8F8F8",
-    "background_color": "#FFFFFF",
-    "icons": [
-        {
-            "src": "favicon.ico",
-            "sizes": "256x256",
-            "type": "image/png"
-        }
-    ]
-}
+{"name":"Tiempología: Control de cuerpo y mente","short_name":"Tiempología","theme_color":"#F8F8F8","icons":[{"src":"favicon.ico","sizes":"256x256","type":"image/png"}],"start_url":"index.html","display":"standalone","background_color":"#FFFFFF"}
