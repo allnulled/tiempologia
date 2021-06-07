@@ -16,6 +16,7 @@ import ConfiguracionesPage from "@/components/ConfiguracionesPage.vue";
 import Intersitial from "@/components/Intersitial.vue";
 import FixedClock from "@/components/FixedClock.vue";
 import Footer from "@/components/Footer.vue";
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 Vue.component("FormSelector", FormSelector);

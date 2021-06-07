@@ -14,7 +14,7 @@
                 }"
                 v-on:click="selectValue(possibleIndex)"
               >
-                <div class="curved overflow-hidden">
+                <div class="navigation-item-contents">
                   <img
                     class="navigation-icon curved"
                     :src="formatIconPath(possibleItem)"
@@ -105,21 +105,22 @@ export default {
 .navigation-item {
   width: 15.1666%;
   vertical-align: top;
+  padding: 2px;
 }
-.navigation-item > div {
-  background-color: transparent;
-  border: 1px solid transparent;
+.navigation-item > .navigation-item-contents {
+  background-color: #E0E0E0;
+  text-align: center;
+  border: 0px solid transparent;
   cursor: pointer;
   transition: background-color 0.2s linear;
-  padding: 0;
   overflow: hidden;
-  padding: 3px;
+  padding: 2px;
 }
-.navigation-item > div:hover {
-  background-color: #e0e0e0;
+.navigation-item > .navigation-item-contents:hover {
+  background-color: #F0F0F0;
 }
-.navigation-item.selected > div{
-  border: 1px solid #e0e0e0;
+.navigation-item.selected > .navigation-item-contents{
+  border: 0px solid transparent;
   background-color: #ffffff;
 }
 .navigation-icon {

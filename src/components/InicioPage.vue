@@ -13,7 +13,10 @@
         :on-change-preset="(v) => seleccionarPagina(v)"
       />
     </div>
-    <table class="no-border-table width-100-x100">
+    <table
+      class="no-border-table width-100-x100 table-selector-fecha"
+      style="margin-top: 4px"
+    >
       <tbody>
         <tr>
           <td>
@@ -52,75 +55,100 @@
         </tr>
       </tbody>
     </table>
-    <table
-      class="no-border-table"
-      data-ref="tabla-inicio-completados"
-      v-if="paginaSeleccionada === 'Vistazo'"
-    >
-      <tbody>
-        <tr>
-          <td colspan="100">
-            <FormSelector
-              :root="root"
-              label-preset="Selecciona un tipo de dato:"
-              property-to-show-preset="nombre"
-              internal-value-preset="Todos"
-              :possible-values-preset="tiposDeDato"
-              :on-change-preset="(v) => seleccionarTipoDeDato(v)"
-            />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div v-if="paginaSeleccionada === 'Vistazo' && resultadosSeleccionados">
+    <div v-if="paginaSeleccionada === 'Vistazo'">
       <table
-        class="no-border-table width-100-x100 vista-general-table"
-        :class="'tipo-' + item.tipo.toLowerCase()"
-        v-for="(item, indexItem) in resultadosSeleccionados"
-        v-bind:key="indexItem"
+        class="no-border-table table-inicio-completados"
+        data-ref="tabla-inicio-completados"
       >
-        <tbody class="table-group" v-if="isInFechaSeleccionada(item)">
+        <tbody>
           <tr>
-            <td class="text-align-left v-align-top">
-              <div class="moment-cell text-label cursor-pointer">
-                <div>{{ item.momento_efectivo.split(" ")[1] }}</div>
-                <div class="text-align-center uppercased">{{ item.tipo }}</div>
-              </div>
-            </td>
-            <td
-              class="width-100-x100 nombre-cell selectable v-align-top"
-              style="border-left: 1px solid #fff"
-              v-on:click="seleccionarFila(indexItem)"
-              :class="{ selected: filaSeleccionada === indexItem }"
-            >
-              {{
-                item.nombre.replace(
-                  / +\[[0-9]+\-[0-9]+\-[0-9]+ [0-9]+\:[0-9]+\:[0-9]+\]+$/g,
-                  ""
-                )
-              }}
-            </td>
-          </tr>
-          <tr v-if="filaSeleccionada === indexItem">
             <td colspan="100">
-              <table class="no-border-table width-100-x100">
-                <tbody
-                  v-for="(value, prop) in item"
-                  v-bind:key="indexItem + '+' + prop"
-                >
-                  <tr>
-                    <td class="property-cell">{{ fromSnakeToHuman(prop) }}</td>
-                    <td class="value-cell">{{ value }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <FormSelector
+                :root="root"
+                label-preset="Selecciona un tipo de dato:"
+                property-to-show-preset="nombre"
+                internal-value-preset="Todos"
+                :possible-values-preset="tiposDeDato"
+                :on-change-preset="(v) => seleccionarTipoDeDato(v)"
+              />
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div v-if="paginaSeleccionada === 'Horario' && resultadosPorFranjas">
-      <table class="no-border-table width-100-x100" style="margin-top: 2px">
+    <div v-if="paginaSeleccionada === 'Vistazo' && resultadosSeleccionados">
+      <div
+        v-for="(item, indexItem) in resultadosSeleccionados"
+        v-bind:key="indexItem"
+      >
+        <table
+          class="no-border-table width-100-x100 vista-general-table"
+          :class="'tipo-' + item.tipo.toLowerCase()"
+          v-if="isInFechaSeleccionada(item)"
+        >
+          <tbody class="table-group">
+            <tr>
+              <td class="text-align-left v-align-top">
+                <div class="moment-cell text-label cursor-pointer">
+                  <div>{{ item.momento_efectivo.split(" ")[1] }}</div>
+                  <div class="text-align-center uppercased">
+                    {{ item.tipo }}
+                  </div>
+                </div>
+              </td>
+              <td
+                class="width-100-x100 nombre-cell selectable v-align-top"
+                style="border-left: 1px solid #fff"
+                v-on:click="seleccionarFila(indexItem)"
+                :class="{ selected: filaSeleccionada === indexItem }"
+              >
+                {{
+                  item.nombre.replace(
+                    / +\[[0-9]+\-[0-9]+\-[0-9]+ [0-9]+\:[0-9]+\:[0-9]+\]+$/g,
+                    ""
+                  )
+                }}
+              </td>
+            </tr>
+            <tr v-if="filaSeleccionada === indexItem">
+              <td colspan="100">
+                <table
+                  class="
+                    no-border-table
+                    width-100-x100
+                    table-fila-seleccionada-de-vista-general
+                  "
+                >
+                  <tbody
+                    v-for="(value, prop) in item"
+                    v-bind:key="indexItem + '+' + prop"
+                  >
+                    <tr>
+                      <td class="property-cell">
+                        {{ fromSnakeToHuman(prop) }}
+                      </td>
+                      <td class="value-cell">{{ value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      v-if="paginaSeleccionada === 'Horario' && resultadosPorFranjas"
+      style="padding-left: 2px; padding-right: 1px"
+    >
+      <table
+        class="no-border-table width-100-x100 table-horario"
+        v-if="
+          Object.values(resultadosPorFranjas).filter(
+            (datosFranja) => datosFranja.length
+          ).length
+        "
+      >
         <tbody
           v-for="(datosFranja, franja) in resultadosPorFranjas"
           v-bind:key="franja"
@@ -142,7 +170,6 @@
           </tr>
           <tr v-if="datosFranja.length && franjaSeleccionada === franja">
             <td class="width-100-x100" colspan="100">
-              <div style="height: 1px"></div>
               <table
                 class="horario-table no-border-table width-100-x100"
                 data-ref="inicio-table-horario"
@@ -212,7 +239,13 @@
                       colspan="100"
                       v-if="itemIndex === itemDeFranjaSeleccionado"
                     >
-                      <table class="no-border-table width-100-x100">
+                      <table
+                        class="
+                          no-border-table
+                          width-100-x100
+                          franja-de-horario-table
+                        "
+                      >
                         <tbody>
                           <tr
                             v-for="(itemValue, itemProperty) in itemFranja"
@@ -220,10 +253,10 @@
                               franja + '+' + itemIndex + '+' + itemProperty
                             "
                           >
-                            <td class="property-cell moment-cell">
+                            <td class="property-cell moment-cell no-border">
                               {{ fromSnakeToHuman(itemProperty) }}:
                             </td>
-                            <td class="value-cell width-100-x100">
+                            <td class="value-cell no-border width-100-x100">
                               {{ itemValue }}
                             </td>
                           </tr>
@@ -236,29 +269,28 @@
             </td>
           </tr>
         </tbody>
+      </table>
+      <table class="no-border-table width-100-x100 horario-volcado-table">
         <tbody>
           <tr>
-            <td colspan="100" style="min-height: 5px"></td>
-          </tr>
-          <tr>
-            <td style="min-height: 5px" colspan="100">
-
+            <td style="padding-top: 5px" colspan="100">
               <span class="float-right">
-                  <div
-                    class="form-button sm selectable"
-                    :class="{selected: filaDeVolcadoSeleccionada}"
-                    v-on:click="despliegaFechaVolcado()">
-                    <img
-                      class="form-icon"
-                      src="@/components/Forms/icons/reusage.png"
-                    />
-                  </div>
+                <div
+                  class="form-button sm selectable"
+                  :class="{ selected: filaDeVolcadoSeleccionada }"
+                  v-on:click="despliegaFechaVolcado()"
+                >
+                  <img
+                    class="form-icon"
+                    src="@/components/Forms/icons/reusage.png"
+                  />
+                </div>
               </span>
             </td>
           </tr>
           <tr v-if="filaDeVolcadoSeleccionada">
             <td colspan="100">
-              <div style="background-color: #f8f8f8; padding: 4px">
+              <div class="volcado-box">
                 <FormMoment
                   :root="root"
                   label-preset="Destino del volcado:"
@@ -267,16 +299,29 @@
                   :internal-value-for-time-preset="'00:00:00'"
                   ref="Momento_del_volcado"
                 />
-                <div
-                  class="form-button sm success-button text-align-center"
-                  v-on:click="volcarPlanesSegunDia"
-                >
-                  <img
-                    src="@/components/Forms/icons/check.png"
-                    alt="Volcar"
-                    class="form-icon"
-                  />
-                </div>
+                <table class="no-border-table width-100-x100">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div
+                          class="
+                            form-button
+                            sm
+                            success-button
+                            text-align-center
+                          "
+                          v-on:click="volcarPlanesSegunDia"
+                        >
+                          <img
+                            src="@/components/Forms/icons/check.png"
+                            alt="Volcar"
+                            class="form-icon"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </td>
           </tr>
@@ -389,7 +434,7 @@ export default {
       const currentDate = new Date(this.fechaSeleccionada);
       currentDate.setDate(this.fechaSeleccionada.getDate() - 1);
       this.fechaSeleccionada = currentDate;
-        this.filaDeVolcadoSeleccionada = false;
+      this.filaDeVolcadoSeleccionada = false;
       this.updateResultadosPorFranjas();
     },
     incrementaFecha() {
@@ -397,7 +442,7 @@ export default {
       currentDate.setDate(this.fechaSeleccionada.getDate() + 1);
       this.fechaSeleccionada = currentDate;
       this.franjaSeleccionada = undefined;
-        this.filaDeVolcadoSeleccionada = false;
+      this.filaDeVolcadoSeleccionada = false;
       this.updateResultadosPorFranjas();
     },
     async refreshData() {
@@ -426,7 +471,7 @@ export default {
       }
     },
     seleccionarPagina(pagina) {
-        this.filaDeVolcadoSeleccionada = false;
+      this.filaDeVolcadoSeleccionada = false;
       this.paginaSeleccionada = pagina;
     },
     seleccionarTipoDeDato(tipoDeDato) {
@@ -471,23 +516,14 @@ export default {
             const momento_intervalo_inicio = this.formatDateReversedTime(
               fecha
             ).replace(/[0-9]+$/g, "00");
-            const [
-              ano1str,
-              mes1str,
-              dia1str,
-              hora1str,
-              minuto1str,
-            ] = resultado.momento_efectivo.split(/[-: ]/g);
+            const [ano1str, mes1str, dia1str, hora1str, minuto1str] =
+              resultado.momento_efectivo.split(/[-: ]/g);
             const ano1 = parseInt(ano1str);
             const mes1 = parseInt(mes1str);
             const dia1 = parseInt(dia1str);
             const hora1 = parseInt(hora1str);
             const minuto1 = parseInt(minuto1str);
-            const [
-              ano2str,
-              mes2str,
-              dia2str,
-            ] = momento_intervalo_inicio
+            const [ano2str, mes2str, dia2str] = momento_intervalo_inicio
               .replace(/[0-9][0-9]:[0-9][0-9]$/g, "00:00")
               .split(/[-: ]/g);
             const ano2 = parseInt(ano2str);
@@ -538,8 +574,9 @@ export default {
       const objetivos = [...datos].filter(
         (e) => e.tipo.toLowerCase() === "objetivo"
       ).length;
-      const planes = [...datos].filter((e) => e.tipo.toLowerCase() === "plan")
-        .length;
+      const planes = [...datos].filter(
+        (e) => e.tipo.toLowerCase() === "plan"
+      ).length;
       const eventos = [...datos].filter(
         (e) => e.tipo.toLowerCase() === "evento"
       ).length;
@@ -641,23 +678,31 @@ export default {
             this.formatDateReversed(this.fechaSeleccionada)
         );
         const fechaVolcado = this.fechaDeVolcado;
-        const formattedFechaSeleccionada = this.formatDateReversed(this.fechaSeleccionada);
+        const formattedFechaSeleccionada = this.formatDateReversed(
+          this.fechaSeleccionada
+        );
         const formattedFechaVolcado = this.formatDateReversed(fechaVolcado);
-        if(formattedFechaSeleccionada === formattedFechaVolcado) {
-          window.alert("No puedes volcar los planes de un día a ese mismo día.");
+        if (formattedFechaSeleccionada === formattedFechaVolcado) {
+          window.alert(
+            "No puedes volcar los planes de un día a ese mismo día."
+          );
           return false;
         }
-        const isConfirmed = window.confirm(`¿Quieres volcar los ${planesDelDia.length} planes del día ${formattedFechaSeleccionada} al día ${formattedFechaVolcado}?`);
-        if(!isConfirmed) {
+        const isConfirmed = window.confirm(
+          `¿Quieres volcar los ${planesDelDia.length} planes del día ${formattedFechaSeleccionada} al día ${formattedFechaVolcado}?`
+        );
+        if (!isConfirmed) {
           return false;
         }
         for (let index = 0; index < planesDelDia.length; index++) {
           const planDelDia = { ...planesDelDia[index] };
           delete planDelDia.id;
-          planDelDia.nombre = planDelDia.nombre.replace(store.REGEX_FOR_DATE_IN_THE_END, "");
-          planDelDia.momento_efectivo = this.formatDateReversedTime(
-            fechaVolcado
+          planDelDia.nombre = planDelDia.nombre.replace(
+            store.REGEX_FOR_DATE_IN_THE_END,
+            ""
           );
+          planDelDia.momento_efectivo =
+            this.formatDateReversedTime(fechaVolcado);
           const result = await store.insertAnyInCascade(planDelDia);
           results.push(result);
         }
@@ -695,7 +740,8 @@ export default {
   font-weight: bold;
   background-color: #333333;
   color: white;
-  border-radius: 3pt;
+  border: 0px solid transparent;
+  border-radius: 0pt;
   text-shadow: 0 0 1px white;
   font-style: italic;
   box-shadow: 0 0 2px black;
@@ -707,7 +753,7 @@ export default {
   transition: background-color 0.2s linear, color 0.2s linear;
   cursor: pointer;
   border-radius: 50%;
-  border: 1px solid #333;
+  border: 0px solid transparent;
   padding-left: 10px;
   padding-right: 10px;
 }

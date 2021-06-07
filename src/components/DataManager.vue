@@ -75,7 +75,7 @@
       </tbody>
     </table>
     <table
-      class="no-border-table data-table data-manager-table"
+      class="no-border-table data-table data-manager-filter-table"
       v-if="mode === 'see'"
       data-ref="data-manager-to_see-table"
     >
@@ -91,7 +91,7 @@
       <tbody v-else>
         <tr>
           <td colspan="10">
-            <div class="filter-box">
+            <div class="filter-box" style="border: 0px solid transparent">
               <input
                 class="form-input"
                 type="text"
@@ -102,6 +102,10 @@
           </td>
         </tr>
       </tbody>
+    </table>
+    <table
+      class="no-border-table data-manager-table"
+      v-if="mode === 'see'">
       <tbody
         v-for="(modelData, modelIndex) in modelsData"
         v-bind:key="modelIndex"
@@ -117,10 +121,11 @@
       >
         <tr
           v-if="
-            targetModel === 'Prototipos' || (
-              modelData.momento_efectivo && 
-              modelData.momento_efectivo.split(' ')[0] === formatDateReversed(selectedDate)
-          )"
+            targetModel === 'Prototipos' ||
+            (modelData.momento_efectivo &&
+              modelData.momento_efectivo.split(' ')[0] ===
+                formatDateReversed(selectedDate))
+          "
           class="nombre-row"
           :class="{ selected: selectedModel === modelIndex }"
         >
@@ -129,30 +134,24 @@
             :colspan="selectedModel === modelIndex ? 9 : 10"
             v-on:click="selectModel(modelIndex)"
           >
-            <b>{{
-              modelData.nombre.replace(
-                REGEX_FOR_DATE_IN_THE_END,
-                ""
-              )
-            }} </b>
+            <b
+              >{{ modelData.nombre.replace(REGEX_FOR_DATE_IN_THE_END, "") }}
+            </b>
             <span v-if="targetModel !== 'Prototipos'" class="underline"
               >({{
                 modelData.nombre
-                  .replace(
-                    REGEX_FOR_DATE_IN_THE_END,
-                    "ððð a las $4:$5"
-                  )
+                  .replace(REGEX_FOR_DATE_IN_THE_END, "ððð a las $4:$5")
                   .replace(/[^ð]+ððð /g, "")
               }})</span
             >
           </td>
           <td v-if="selectedModel === modelIndex">
             <div class="form-button sm danger-button">
-                <img
-                  class="form-icon"
-                  src="@/components/Forms/icons/trash.png"
-                  v-on:click="confirmDelete(selectedModel)"
-                />
+              <img
+                class="form-icon"
+                src="@/components/Forms/icons/trash.png"
+                v-on:click="confirmDelete(selectedModel)"
+              />
             </div>
           </td>
         </tr>
@@ -167,9 +166,7 @@
                   v-for="(value, propert) in sortedFields(modelData)"
                   v-bind:key="modelIndex + '+' + propert"
                 >
-                  <td
-                    class="property-cell"
-                  >
+                  <td class="property-cell">
                     {{
                       propert.substr(0, 1).toUpperCase() +
                       propert.substr(1).replace(/_/g, " ")
@@ -329,7 +326,7 @@
                       </tr>
                       <tr v-if="selectedObjetivo === indexPuntuacion">
                         <td colspan="10" class="propiedades-de-objetivo-cell">
-                          <div>
+                          <div class="propiedades-de-objetivo-box">
                             <table
                               class="no-border-table width-100-x100"
                               data-ref="data-manager-propiedades_de_objetivo_asociado-table"
@@ -352,42 +349,64 @@
                                 </tr>
                                 <tr>
                                   <td>
-                                    <div class="form-input-deployer-container">
-                                      <div class="form-input-deployer-icon">
-                                        <img
-                                          class="form-input-deployer"
-                                          src="@/components/Forms/icons/minus.png"
-                                          v-on:click="
-                                            decreasePuntuacionIntensidad(
-                                              indexPuntuacion
-                                            )
-                                          "
-                                        />
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td class="width-100-x100">
-                                    <input
-                                      type="text"
-                                      class="form-input"
-                                      style="text-align: center"
-                                      v-model="puntuacion.intensidad"
-                                    />
-                                  </td>
-                                  <td>
-                                    <div class="form-input-deployer-container">
-                                      <div class="form-input-deployer-icon">
-                                        <img
-                                          class="form-input-deployer"
-                                          src="@/components/Forms/icons/plus.png"
-                                          v-on:click="
-                                            increasePuntuacionIntensidad(
-                                              indexPuntuacion
-                                            )
-                                          "
-                                        />
-                                      </div>
-                                    </div>
+                                    <table
+                                      class="no-border-table width-100-x100"
+                                    >
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <div
+                                              class="
+                                                form-input-deployer-container
+                                              "
+                                            >
+                                              <div
+                                                class="form-input-deployer-icon"
+                                              >
+                                                <img
+                                                  class="form-input-deployer"
+                                                  src="@/components/Forms/icons/minus.png"
+                                                  v-on:click="
+                                                    decreasePuntuacionIntensidad(
+                                                      indexPuntuacion
+                                                    )
+                                                  "
+                                                />
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td class="width-100-x100">
+                                            <input
+                                              type="text"
+                                              class="form-input"
+                                              style="text-align: center"
+                                              v-model="puntuacion.intensidad"
+                                            />
+                                          </td>
+                                          <td>
+                                            <div
+                                              class="
+                                                form-input-deployer-container
+                                              "
+                                            >
+                                              <div
+                                                class="form-input-deployer-icon"
+                                              >
+                                                <img
+                                                  class="form-input-deployer"
+                                                  src="@/components/Forms/icons/plus.png"
+                                                  v-on:click="
+                                                    increasePuntuacionIntensidad(
+                                                      indexPuntuacion
+                                                    )
+                                                  "
+                                                />
+                                              </div>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
                                   </td>
                                 </tr>
                               </tbody>
@@ -405,11 +424,11 @@
                 type="button"
                 v-on:click="internalValue.puntuacion_de_objetivos.push({})"
               >
-                    <img
-                      class="form-icon sm vertical-align-middle"
-                      src="@/components/Forms/icons/plus.png"
-                      v-on:click="increasePuntuacionIntensidad(indexPuntuacion)"
-                    />
+                <img
+                  class="form-icon sm vertical-align-middle"
+                  src="@/components/Forms/icons/plus.png"
+                  v-on:click="increasePuntuacionIntensidad(indexPuntuacion)"
+                />
               </button>
             </div>
             <div class="h-border"></div>
@@ -536,8 +555,8 @@ export default {
         this.modelsData = [
           ...this["result" + this.targetModel].map((x) => this.sortedFields(x)),
         ].sort((a, b) => {
-          if(!b.momento_efectivo) return -1;
-          if(!a.momento_efectivo) return 1;
+          if (!b.momento_efectivo) return -1;
+          if (!a.momento_efectivo) return 1;
           return a.momento_efectivo >= b.momento_efectivo ? -1 : 1;
         });
       } catch (error) {
@@ -551,12 +570,11 @@ export default {
         this.refreshData();
       } else if (mode === "add") {
         setTimeout(() => {
-          if(!("Momento_efectivo" in this.$refs)) {
+          if (!("Momento_efectivo" in this.$refs)) {
             return;
           }
-          this.$refs.Momento_efectivo.internalValueForDate = this.formatDateReversed(
-            this.selectedDate
-          );
+          this.$refs.Momento_efectivo.internalValueForDate =
+            this.formatDateReversed(this.selectedDate);
           this.$refs.Momento_efectivo.internalValueForTime = this.formatTime(
             this.selectedDate
           );
@@ -627,12 +645,13 @@ export default {
           adaptedValue = { ...this.internalValue };
         }
 
-
         const results = [];
-        const result = await store.insertAnyInCascade(adaptedValue, this.dataPrototiposDeObjetivos, this.targetModel);
+        const result = await store.insertAnyInCascade(
+          adaptedValue,
+          this.dataPrototiposDeObjetivos,
+          this.targetModel
+        );
         results.push(result);
-
-
 
         console.log("INSERT RESULT:", results);
         this.internalValue = this.generateFreshValue();
@@ -653,7 +672,9 @@ export default {
     },
     fulfillPrototipo(prototipo) {
       const prototipoItem = this.dataPrototipos.filter(
-        (p) => (p.nombre === prototipo) || (p.nombre.replace(store.REGEX_FOR_DATE_IN_THE_END, "") === prototipo)
+        (p) =>
+          p.nombre === prototipo ||
+          p.nombre.replace(store.REGEX_FOR_DATE_IN_THE_END, "") === prototipo
       )[0];
       Object.keys(prototipoItem).forEach((propertyPrototipo) => {
         const p =
@@ -662,7 +683,13 @@ export default {
         if (p === "Id") {
           return;
         }
-        const tempValue = typeof prototipoItem[propertyPrototipo] === 'string' ? prototipoItem[propertyPrototipo].replace(store.REGEX_FOR_DATE_IN_THE_END, "") : prototipoItem[propertyPrototipo];
+        const tempValue =
+          typeof prototipoItem[propertyPrototipo] === "string"
+            ? prototipoItem[propertyPrototipo].replace(
+                store.REGEX_FOR_DATE_IN_THE_END,
+                ""
+              )
+            : prototipoItem[propertyPrototipo];
         if (p in this.$refs) {
           this.$refs[p].internalValue = tempValue;
         } else {
@@ -714,9 +741,8 @@ export default {
     },
     setPuntuacionIntensidad(indexPuntuacion) {
       return (v) => {
-        this.internalValue.puntuacion_de_objetivos[
-          indexPuntuacion
-        ].intensidad = v;
+        this.internalValue.puntuacion_de_objetivos[indexPuntuacion].intensidad =
+          v;
       };
     },
     increasePuntuacionIntensidad(indexPuntuacion) {
@@ -766,7 +792,11 @@ export default {
     confirmDelete(index) {
       const dataItem = this.modelsData[index];
       const isConfirmed = window.confirm(
-        `Quieres eliminar el «${dataItem.tipo.toLowerCase()}»: ${JSON.stringify(dataItem, null, 4)}?`
+        `Quieres eliminar el «${dataItem.tipo.toLowerCase()}»: ${JSON.stringify(
+          dataItem,
+          null,
+          4
+        )}?`
       );
       if (isConfirmed) {
         store.delete(this.targetModel, dataItem.id);
@@ -777,7 +807,7 @@ export default {
     async changeValue(item, propert) {
       try {
         let value = undefined;
-        if(typeof item[propert] !== "string") {
+        if (typeof item[propert] !== "string") {
           value = window.prompt(
             `Establece un nuevo valor para:\n\n  «${this.targetModel}#${item.id}.${propert}»\n\n`,
             JSON.stringify(item[propert])
@@ -798,7 +828,7 @@ export default {
           item[propert] = value;
           await store.update(this.targetModel, item.id, item);
           await this.refreshData();
-        } else if(typeof value !== "undefined" && value !== null) {
+        } else if (typeof value !== "undefined" && value !== null) {
           item[propert] = value;
           await store.update(this.targetModel, item.id, item);
           await this.refreshData();

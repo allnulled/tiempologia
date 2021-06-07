@@ -67,7 +67,8 @@ export default {
   background-color: transparent;
 }
 .intersitial .intersitial-contents {
-  background-color: #F8F8F8;
+  background-color: black;
+  color: white;
   opacity: 1;
   transition: opacity 3.7s linear;
 }
@@ -94,14 +95,17 @@ export default {
   width: 140px;
 }
 .intersitial-title {
+  color: white !important;
   font-size: 23px;
   font-weight: bold;
 }
 .intersitial-subtitle {
+  color: white !important;
   font-size: 11px;
   font-weight: bold;
 }
 .intersitial-authory {
+  color: white !important;
   font-size: 9px;
   padding-top: 15px;
 }

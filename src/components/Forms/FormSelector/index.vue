@@ -23,7 +23,7 @@
             <div class="form-input-deployer-icon">
               <img
                 class="form-input-deployer curved"
-                src="@/components/Forms/icons/down-arrow.png"
+                :src="'./img/icons/' + (isSelected ? 'up' : 'down') + '-arrow.png'"
               />
             </div>
           </td>
@@ -123,13 +123,13 @@ export default {
   min-height: 30px;
 }
 .form-input-deployer {
-  width: 37px;
-  height: 37px;
-  background-color: #E0E0E0;
-  border-radius: 3pt;
+  width: 40px;
+  height: 40px;
+  border-radius: 0pt;
   padding: 10px;
   vertical-align: middle;
   cursor: pointer;
+  transition: background-color .2s linear;
 }
 .form-input-deployer-icon {
   vertical-align: middle;
@@ -138,21 +138,21 @@ export default {
   transition: transform 0.8s ease-in-out;
 }
 .selector-component.selected .form-input-deployer {
+  /*
   transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
+  */
 }
 .options-list {
-  border: 1px solid #e0e0e0;
+  border: 0px solid transparent;
 }
 .options-item {
   padding: 10px;
   padding-left: 10px;
   padding-right: 10px;
   cursor: pointer;
-  border-top: 1px solid #f0f0f0;
-  background-color: #FFFFFF;
-  transition: background-color 0.1s linear;
+  font-size: 12px;
 }
 .options-item:first-child {
   border-top: none;

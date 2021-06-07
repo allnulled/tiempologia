@@ -103,6 +103,6 @@ export default {
 
 <style>
 .moment-table {
-  margin-left: -1px;
+  
 }
 </style>

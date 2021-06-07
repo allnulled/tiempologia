@@ -4,10 +4,18 @@
       <div class="form-label">
         {{ label }}
       </div>
-      <input class="form-input" type="text" v-model="internalValue" />
-      <div class="error-box" v-if="errorMessage">
-        <div class="error-message">{{ errorMessage }}</div>
-      </div>
+      <table class="no-border-table width-100-x100">
+        <tbody>
+          <tr>
+            <td>
+              <input class="form-input" type="text" v-model="internalValue" />
+              <div class="error-box" v-if="errorMessage">
+                <div class="error-message">{{ errorMessage }}</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>

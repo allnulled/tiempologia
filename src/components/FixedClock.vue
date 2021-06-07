@@ -60,6 +60,6 @@ export default {
   cursor: pointer;
 }
 .clock-label:hover {
-  background-color: white;
+  
 }
 </style>

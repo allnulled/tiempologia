@@ -2,11 +2,10 @@
   <div class="reality-page-component">
 
     <div class="settings-section">
-      <div class="form-label">Sección de configuraciones</div>
       <div>
         <FormSelector
           :root="root"
-          label-preset="Selecciona una sección:"
+          label-preset="Selecciona una sección de configuraciones:"
           :possible-values-preset="posiblesSecciones"
           property-to-show-preset="nombre"
           internal-value-preset=""

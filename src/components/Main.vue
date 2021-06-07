@@ -69,7 +69,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 html {
-  background-color: #E8E8E8;
+  background-color: #333;
+}
+div {
+  color: #FFFFFF;
 }
 * {
   box-sizing: border-box;
@@ -119,7 +122,7 @@ table {
   display: block;
   width: 100%;
   border-radius: 0pt;
-  border: 1px solid #d0d0d0;
+  border: 0px solid transparent;
   padding: 10px;
 }
 
@@ -139,23 +142,24 @@ table {
 
 
 .form-button {
-  border: 1px solid #d0d0d0;
-  border-radius: 3pt;
+  border: 0px solid transparent;
+  border-radius: 0pt;
   padding: 10px;
+  background-color: #D0D0D0;
   cursor: pointer;
   transition: background-color 0.2s linear;
 }
 .form-button:hover {
-  background-color: #e0e0e0;
+  background-color: #E0E0E0;
 }
 .form-icon {
   vertical-align: middle;
 }
 .form-button.sm {
-  padding: 4px;
+  padding: 5px;
 }
 .form-button.xs {
-  padding: 4px;
+  padding: 5px;
 }
 .form-button.sm .form-icon {
   width: 22px;
@@ -186,7 +190,7 @@ table {
   padding-top: 10px;
   padding-bottom: 10px;
   text-align: left;
-  border: 1px solid #E0E0E0;
+  border: 0px solid transparent;
   background-color: #FFDFDF;
   font-size: 10px;
 }
@@ -250,8 +254,12 @@ table {
   display: none;
 }
 .propiedades-de-objetivo-cell {
-  border: 1px solid #E0E0E0;
+  border: 0px solid transparent;
+  /*background-color: #F8F8F8;*/
+}
+.propiedades-de-objetivo-box {
   background-color: #F8F8F8;
+
 }
 
 .main-component {
@@ -292,10 +300,10 @@ table {
   cursor: pointer;
 }
 .selectable:hover {
-  background-color: #C0C0C0;
+  background-color: #E0E0E0;
 }
 .selectable.selected {
-  background-color: #C0C0C0;
+  background-color: #FFFFFF;
 }
 .text-label {
   font-size: 11px;
@@ -365,7 +373,7 @@ table {
 
 .form-sm {
   font-size: 10px;
-  padding: 4px;
+  padding: 5px;
 }
 
 .monospaced {
@@ -374,7 +382,7 @@ table {
 }
 
 input, textarea, button, .curved {
-  border-radius: 3pt !important;
+  border-radius: 0pt !important;
 }
 
 .overflow-hidden {
@@ -386,4 +394,98 @@ input, textarea, button, .curved {
 .display-none {
   display: none;
 }
+
+
+
+
+
+
+
+
+html {
+  background-color: #f8f8f8;
+}
+div {
+  color: #000;
+}
+button, input, textarea,
+  .form-input-deployer,
+  .form-button,
+  .form-input,
+  .navigation-item-contents,
+  .options-item,
+  .volcado-box,
+  .propiedades-de-objetivo-box,
+  .error-box,
+  .data-manager-table,
+  .table-horario,
+  .vista-general-table {
+  box-shadow: 1px 1px 1px 1px #D0D0D0 !important;
+}
+
+.volcado-box {
+  margin-top: 5px;
+}
+
+.volcado-box, .propiedades-de-objetivo-box {
+  padding: 5px;
+}
+
+.error-box,
+.data-manager-filter-table,
+.data-manager-table,
+.vista-general-table,
+.options-list {
+  margin-top: 5px;
+}
+
+.propiedades-de-objetivo-box {
+  margin-bottom: 5px;
+}
+
+.volcado-box {
+  background-color: white;
+}
+
+.options-item {
+  margin-top: 4px;
+  border-left: 2px solid #333;
+}
+
+.separador-vertical {
+  height: 5px;
+  min-height: 5px;
+  max-height: 5px;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.form-input-deployer,
+.options-item {
+  color: #333;
+  background-color: #D0D0D0;
+}
+.form-input-deployer:hover,
+.options-item:hover {
+  background-color: #E0E0E0;
+}
+.form-input-deployer:focus,
+.options-item:focus {
+  background-color: white;
+}
+.error-box, .form-input, .property-cell, .moment-cell, .value-cell, .nombre-cell {
+  color: black;
+}
+.table-horario {
+  margin-top: 5px;
+}
+.table-horario .moment-cell,
+.table-horario .value-cell,
+.table-horario .property-cell {
+  border-top: 0px solid transparent !important;
+}
+
+
 </style>
